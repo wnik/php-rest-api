@@ -19,7 +19,7 @@ class App
 
     public function get(string $pattern, array $args = [], \Closure $callback)
     {
-        $route = $this->router->createRoute($pattern, $args,'GET', $callback);
+        $route = $this->router->createRoute($pattern, $args, 'GET', $callback);
         $this->router->add($route);
     }
 
