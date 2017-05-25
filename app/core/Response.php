@@ -80,7 +80,7 @@ class Response extends Message implements ResponseInterface
         $stream = fopen('php://temp', 'r+');
         fwrite($stream, $body);
         fseek($stream, 0);
-        $this->stream = new Stream($stream);
+        $this->body = new Stream($stream);
     }
 
     public function getStatusCode()

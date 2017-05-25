@@ -7,13 +7,14 @@ class Route
 {
     private $defaultPattern = '(\w+)';
     private $pattern;
-    private $args;
+    private $arguments = [];
+    private $argumentsPatterns = [];
     private $method;
     private $callback;
 
-    public function __construct(string $pattern, array $args, string $method, \Closure $callback)
+    public function __construct(string $pattern, array $argumentsPatterns, string $method, \Closure $callback)
     {
-        $this->args = $args;
+        $this->argumentsPatterns = $argumentsPatterns;
         $this->method = $method;
         $this->callback = $callback;
         $this->pattern = $this->parsePattern($pattern);
@@ -24,9 +25,9 @@ class Route
         $pattern = ltrim(rtrim($pattern, '/'), '/');
 
         if (preg_match_all('/{(\w+)}/', $pattern, $matches)) {
-            foreach ($matches[1] as $arg) {
-                if (!array_key_exists($arg, $this->args) || empty($this->args[$arg])) {
-                    $this->args[$arg] = $this->defaultPattern;
+            foreach ($matches[1] as $argumentPattern) {
+                if (!array_key_exists($argumentPattern, $this->argumentsPatterns) || empty($this->argumentsPatterns[$argumentPattern])) {
+                    $this->argumentsPatterns[$argumentPattern] = $this->defaultPattern;
                 }
             }
 
@@ -35,7 +36,7 @@ class Route
                 $toReplace[$repKey] = '/' . $repValue . '/';
             }
 
-            $replacement = array_values($this->args);
+            $replacement = array_values($this->argumentsPatterns);
 
             $pattern = preg_replace($toReplace, $replacement, $pattern);
 
@@ -70,9 +71,19 @@ class Route
         return $this->pattern;
     }
 
-    public function getArgs(): array
+    public function getArgumentsPatterns(): array
     {
-        return $this->args;
+        return $this->argumentsPatterns;
+    }
+
+    public function getCallback()
+    {
+        return $this->callback;
+    }
+
+    public function setArguments()
+    {
+
     }
 
     public function __invoke()

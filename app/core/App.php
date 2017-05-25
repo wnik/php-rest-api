@@ -17,16 +17,16 @@ class App
         $this->router = new Router();
     }
 
-    public function get(string $pattern, array $args = [], \Closure $callback)
+    public function get(string $pattern, array $argumentsPatterns = [], \Closure $callback)
     {
-        $route = $this->router->createRoute($pattern, $args, 'GET', $callback);
+        $route = $this->router->createRoute($pattern, $argumentsPatterns, 'GET', $callback);
         $this->router->add($route);
     }
 
     public function run()
     {
         $this->router->match((new RequestFactory())->create(), (new ResponseFactory())->create(), function () {
-
+            echo 'xd';
         });
     }
 }

@@ -7,6 +7,7 @@ use Psr\Http\Message\StreamInterface;
 class Stream implements StreamInterface
 {
     private $stream;
+    private $size;
 
     public function __construct($stream)
     {
@@ -51,7 +52,12 @@ class Stream implements StreamInterface
 
     public function getSize()
     {
-        // TODO: Implement getSize() method.
+        if (!$this->size) {
+            $stats = fstat($this->stream);
+            $this->size = $stats['size'];
+        }
+
+        return $this->size;
     }
 
     public function isReadable()
@@ -71,12 +77,20 @@ class Stream implements StreamInterface
 
     public function read($length)
     {
-        // TODO: Implement read() method.
+        $data = fread($this->stream, $length);
+
+        if ($data === false) {
+            throw new \Exception('Cannot read from stream');
+        }
+
+        return $data;
     }
 
     public function rewind()
     {
-        // TODO: Implement rewind() method.
+        if (rewind($this->stream) === false) {
+            throw new \Exception('Cannot rewind');
+        }
     }
 
     public function seek($offset, $whence = SEEK_SET)
@@ -91,6 +105,14 @@ class Stream implements StreamInterface
 
     public function write($string)
     {
-        // TODO: Implement write() method.
+        $data = fwrite($this->stream, $string);
+
+        if ($data === false) {
+            throw new \Exception('Cannot wirte to stream');
+        }
+
+        $this->size = null;
+
+        return $data;
     }
 }

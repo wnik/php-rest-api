@@ -9,12 +9,12 @@ class Message implements MessageInterface
 {
     protected $headers = [];
     protected $protocol;
-    protected $stream;
+    protected $body;
 
     public function getBody()
     {
-        if (isset($this->stream))
-            return $this->stream;
+        if (isset($this->body))
+            return $this->body;
         else
             throw new \Exception('Stream is not set');
     }
@@ -44,7 +44,8 @@ class Message implements MessageInterface
 
     public function withBody(StreamInterface $body)
     {
-        // TODO: Implement withBody() method.
+        $this->body = $body;
+        return $this;
     }
 
     public function withHeader($name, $value)

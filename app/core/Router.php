@@ -15,9 +15,9 @@ class Router
         $this->routes[] = $route;
     }
 
-    public function createRoute(string $pattern, array $args, string $method, \Closure $callback): Route
+    public function createRoute(string $pattern, array $argumentsPatterns, string $method, \Closure $callback): Route
     {
-        return new Route($pattern, $args, $method, $callback);
+        return new Route($pattern, $argumentsPatterns, $method, $callback);
     }
 
     public function match(RequestInterface $request, ResponseInterface $response, \Closure $callback): bool
@@ -35,9 +35,18 @@ class Router
             $uri = $request->getRequestTarget();
 
             if (preg_match($pattern, $uri, $matches)) {
-                var_dump($matches);
+
+                $argumentsCount = count($matches);
+                $argumentsPatternsKeys = array_keys($route->getArgumentsPatterns());
+                $arguments = [];
+
+                if ($argumentsCount > 1) {
+                    array_shift($matches);
+                    $arguments = array_combine($argumentsPatternsKeys, $matches);
+                }
 
                 call_user_func($callback, $request, $response);
+                call_user_func($route->getCallback(), $request, $response, $arguments);
 
                 return true;
             }

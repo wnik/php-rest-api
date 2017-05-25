@@ -33,7 +33,7 @@ class Request extends Message implements RequestInterface
         $stream = fopen('php://temp', 'r+');
         fwrite($stream, $body);
         fseek($stream, 0);
-        $this->stream = new Stream($stream);
+        $this->body = new Stream($stream);
     }
 
     public function getMethod()
@@ -47,6 +47,7 @@ class Request extends Message implements RequestInterface
             return $this->requestTarget;
         } else {
             $uri = $this->uri->getPath();
+            $uri = rtrim($uri, '/');
 
             if ($uri === '') {
                 $uri = '/';
