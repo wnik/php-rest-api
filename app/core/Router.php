@@ -45,8 +45,8 @@ class Router
                     $arguments = array_combine($argumentsPatternsKeys, $matches);
                 }
 
+                $response = call_user_func($route->getCallback(), $request, $response, $arguments);
                 call_user_func($callback, $request, $response);
-                call_user_func($route->getCallback(), $request, $response, $arguments);
 
                 return true;
             }

@@ -75,7 +75,7 @@ class Response extends Message implements ResponseInterface
         $this->statusCode = $statusCode;
         $this->reasonPhrase = $this->codes[$statusCode] ?? $this->codes[200];
         $this->headers = $headers;
-        $this->protocol = $protocol;
+        $this->protocol = $this->validateProtocol($protocol);
 
         $stream = fopen('php://temp', 'r+');
         fwrite($stream, $body);
@@ -103,5 +103,14 @@ class Response extends Message implements ResponseInterface
     public function getReasonPhrase()
     {
         return $this->reasonPhrase;
+    }
+
+    public function validateProtocol(string $protocol)
+    {
+        if (preg_match('/[0-9]{1}\.[0-9]{1}/', $protocol, $matches)) {
+            return $matches[0];
+        } else {
+            throw new \Exception("Given protocol version: $protocol is not valid");
+        }
     }
 }
