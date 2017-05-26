@@ -25,7 +25,7 @@ class App
         $this->router->add($route);
     }
 
-    public function respond(ResponseInterface $response)
+    public function respond(ResponseInterface $response): void
     {
         header("HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()} {$response->getReasonPhrase()}");
 
@@ -40,8 +40,20 @@ class App
 
     public function run()
     {
-        $this->router->match((new RequestFactory())->create(), (new ResponseFactory())->create(), function (RequestInterface $request, ResponseInterface $response) {
-            $this->respond($response);
-        });
+        $isMatched = $this->router->match(
+            (new RequestFactory())->create(),
+            (new ResponseFactory())->create(),
+            function (RequestInterface $request, ResponseInterface $response) {
+                $this->respond($response);
+            }
+        );
+
+        if (!$isMatched) {
+            $notFoundResponse = (new ResponseFactory())->create();
+            $notFoundResponse->withStatus(404);
+            $notFoundResponse->getBody()->write('Requested path is not found');
+
+            $this->respond($notFoundResponse);
+        }
     }
 }

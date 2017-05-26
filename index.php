@@ -11,13 +11,14 @@
 
     $app = new App($config);
 
-    $app->get('/archive/{page}/user/{user}',
-            array('page' => '([0-9]+)', 'user' => '(\w+)'),
-            function (RequestInterface $request, ResponseInterface $response, array $arguments) {
-                $response->getBody()->write('XDD');
+    $app->get(
+        '/archive/{page}/user/{user}',
+        array('page' => '([0-9]+)', 'user' => '(\w+)'),
+        function (RequestInterface $request, ResponseInterface $response, array $arguments) {
+            $response->getBody()->write('XDD');
 
-                return $response;
-            }
+            return $response;
+        }
     );
 
     $app->run();
