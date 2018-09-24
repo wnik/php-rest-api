@@ -17,7 +17,6 @@ class Stream implements StreamInterface
         $this->stream = $stream;
         $meta = stream_get_meta_data($this->stream);
 
-//        var_dump($meta);
     }
 
     public function __toString()

@@ -48,7 +48,6 @@ class Request extends Message implements RequestInterface
         } else {
             $uri = $this->uri->getPath();
             $uri = rtrim($uri, '/');
-
             if ($uri === '') {
                 $uri = '/';
             }

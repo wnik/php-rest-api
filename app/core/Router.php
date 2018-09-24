@@ -35,7 +35,6 @@ class Router
             $uri = $request->getRequestTarget();
 
             if (preg_match($pattern, $uri, $matches)) {
-
                 $argumentsCount = count($matches);
                 $argumentsPatternsKeys = array_keys($route->getArgumentsPatterns());
                 $arguments = [];

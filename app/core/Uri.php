@@ -14,14 +14,9 @@ class Uri implements UriInterface
     private $userInfo;
     private $fragment;
 
-    public function __construct(string $uri)
+    public function __construct(array $parts)
     {
-        if (!is_string($uri) || $uri === '') {
-            throw new \Exception("Given uri: $uri must be a string or cannot be empty");
-        }
-
-        $uri = parse_url($uri);
-        $this->setUriParams($uri);
+        $this->setUriParams($this->createFromParts($parts));
     }
 
     public function setUriParams(array $parsedUri)
@@ -37,17 +32,20 @@ class Uri implements UriInterface
         $this->fragment = '';
     }
 
-    public static function createFromParts(array $uriParts): string
+    public function createFromParts(array $uriParts): array
     {
-        $scheme = $uriParts['REQUEST_SCHEME'] ?? '';
+        $scheme = $uriParts['REQUEST_SCHEME'] ?? 'http';
         $port = $uriParts['SERVER_PORT'] ?? '';
         $port = ($port === '80' || $port === '443') ? '' : ':' . $port;
         $host = $uriParts['HTTP_HOST'] ?? '';
         $path = $uriParts['REQUEST_URI'] ?? '';
 
-        $uri = $scheme . '://' . $host . $port . $path;
-
-        return $uri;
+        return [
+            'scheme' => $scheme,
+            'host' => $host,
+            'port' => $port,
+            'path' => $path,
+        ];
     }
 
     public function __toString()
